@@ -43,9 +43,10 @@ frac optimise(frac a) {
 	return ret;
 }
 
-frac static extend(frac a, int b) {
-	return  makeFrac(a.numerator * b, a.denominator * b);
-}
+// writtern in case it ever gets needed
+/* frac static extend(frac a, int b) { */
+/* 	return  makeFrac(a.numerator * b, a.denominator * b); */
+/* } */
 
 frac add(frac a, frac b) {
 	a = makeFrac((a.numerator * b.denominator) + (b.numerator * a.denominator), a.denominator * b.denominator);
