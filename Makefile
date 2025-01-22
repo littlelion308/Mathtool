@@ -1,11 +1,14 @@
-CFAGS = -Wall
+DEFFAGS = -Wall
 FINFAGS = -O3
-OBJS = frac.o
+OBJS = frac.o matrix.o
 
 exec: out/$(OBJS) outdir
-	gcc $(CFAGS) -o main src/exec.c out/$(OBJS)
+	gcc $(DEFFAGS) -o main src/exec.c out/$(OBJS)
 	chmod +x main
 
+out/matrix.o: src/matrix.c src/matrix.h
+	makedir -p out
+	gcc $(DEFFAGS) -c src/matrix.c -o out/matrix.o
 
 out/frac.o: src/frac.c src/frac.h
 	mkdir -p out
