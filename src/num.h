@@ -8,7 +8,7 @@ typedef frac realnum;
 #endif
 
 realnum optimiseRealnum(realnum a);
-realnum makerealnum(int denominator, int numerator);
+realnum makerealnum(int numerator, int denominator);
 double realnumToDouble(realnum a);
 float realnumToFloat(realnum a);
 void printRealnum(realnum a);
