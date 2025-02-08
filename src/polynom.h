@@ -5,7 +5,7 @@
 #define POLYNOM
 typedef struct {
 	int deg;
-	realnum p[];
+	num p[];
 } polynom;
 // polynom a;
 // a.p = {0,1,2,3,4}
@@ -19,7 +19,7 @@ typedef struct {
 
 ////// general operations on any Ring, here in Polynoms over realnum////
 // Turns the list of descending nums and the deg into a polynom.
-polynom makePolynom(realnum a[], int deg);
+polynom makePolynom(num a[], int deg);
 // adds the tow given Polynoms together.
 polynom addPolynom(polynom f, polynom g);
 // multiplies the tow given Polynoms.
@@ -29,7 +29,7 @@ divisoremainder divPolynom(polynom numerator, polynom denominator);
 
 ////// Polynom or Function specific functions
 // Calculates the value of a given polynom a location x.
-realnum calcPolynom(polynom f, realnum x);
+num calcPolynom(polynom f, num x);
 // calculates the derivative of f, usualy calles f'
 polynom derivePolynom(polynom f);
 // Calculates the standard Integral of f, commonly called F
