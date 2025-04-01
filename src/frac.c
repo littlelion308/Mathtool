@@ -1,6 +1,17 @@
 #include "frac.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <limits.h>
+
+static field getField() {
+	frac addneutural = makeFrac(0,1);
+	group fracAdd = {&add, &addneutural, &subFromZero, &sub, &copy};
+	frac mplneutural = makeFrac(1,1);
+	group fracMpl = {&mpl, &addneutural, &mplMOne, &divide, &copy};
+	field fracField = {fracAdd, fracMpl, &optimise};
+	return fracField;
+}
 
 int gcd(int a, int b) {
 	if (a < 0) a = (-a);
@@ -19,28 +30,27 @@ int gcd(int a, int b) {
 
 }
 
-frac optimise(frac a) {
-	int num = a.numerator;
-	int den = a.denominator;
-	frac ret;
+void optimise(void *input) {
+	frac *a = (frac *)input;
+	int num = a->numerator;
+	int den = a->denominator;
 	if (num == 0) {
-		ret.numerator = 0;
-		ret.denominator = 1;
-		return ret;
+		a->numerator = 0;
+		a->denominator = 1;
+		return;
 	}
 	if (den < 0) {
-		num *= -1;
-		den *= -1;
+		a->numerator *= -1;
+		a->denominator *= -1;
 	}
 	if (den == 0) {
-		ret.numerator = num > 0 ? INT_MAX : INT_MIN;
-		ret.denominator = 0;
-		return ret;
+		a->numerator = num > 0 ? INT_MAX : INT_MIN;
+		a->denominator = 0;
+		return;
 	}
 	int div = gcd(num, den);
-	ret.numerator = num/div;
-	ret.denominator = den/div;
-	return ret;
+	a->numerator = num/div;
+	a->denominator = den/div;
 }
 
 // writtern in case it ever gets needed
@@ -48,22 +58,53 @@ frac optimise(frac a) {
 /* 	return  makeFrac(a.numerator * b, a.denominator * b); */
 /* } */
 
-frac add(frac a, frac b) {
-	a = makeFrac((a.numerator * b.denominator) + (b.numerator * a.denominator), a.denominator * b.denominator);
-	return optimise(a);
+
+void *copy(void *a) {
+	void *b = malloc(sizeof(frac));
+	memcpy(b, a, sizeof(frac));
+	return b;
 }
 
-frac sub(frac a, frac b) {
-	return optimise(makeFrac((a.numerator * b.denominator) - (b.numerator * a.denominator), a.denominator * b.denominator));
+void *add(void *va, void *vb) {
+	frac *a = (frac *)va;
+	frac *b = (frac *)vb;
+	frac c = makeFrac((a->numerator * b->denominator) + (b->numerator * a->denominator), a->denominator * b->denominator);
+	optimise((void *)&c);
+	return copy(&c);
 }
 
-frac mpl(frac a, frac b) {
-	a = makeFrac(a.numerator * b.numerator, a.denominator * b.denominator);
-	return optimise(a);
+void *subFromZero(void *a) {
+	sub(getField().add.neutral, a);
 }
 
-frac div(frac a, frac b) {
-	return optimise(makeFrac(a.numerator * b.denominator, a.denominator * b.numerator));
+void *sub(void *va, void *vb) {
+	frac *a = (frac *)va;
+	frac *b = (frac *)vb;
+	frac c = makeFrac((a->numerator * b->denominator) - (b->numerator * a->denominator), a->denominator * b->denominator);
+	optimise((void *)&c);
+	return copy(&c);
+
+}
+
+
+void *mpl(void *va, void *vb) {
+	frac *a = (frac *)va;
+	frac *b = (frac *)vb;
+	frac c = makeFrac((a->numerator * b->numerator), a->denominator * b->denominator);
+	optimise((void *)&c);
+	return copy(&c);
+}
+
+void *mplMOne(void *a) {
+	divide(getField().mpl.neutral, a);
+}
+
+void *divide(void *va, void *vb) {
+	frac *a = (frac *)va;
+	frac *b = (frac *)vb;
+	frac c = makeFrac((a->numerator * b->denominator), a->denominator * b->numerator);
+	optimise((void *)&c);
+	return copy(&c);
 
 }
 /* frac power(frac a, frac b) {} */
@@ -73,10 +114,10 @@ frac power(frac base, int exponent) {
 	if (exponent == 0) return makeFrac(1,1);
 	if (exponent > 1)
 		for (; exponent > 1; exponent--)
-			ret = mpl(ret, base);
+			ret = *(frac *)mpl(&ret, &base);
 	else if (exponent < 0)
 		for (; exponent < 1; exponent++)
-			ret = div(ret, base);
+			ret = *(frac *)divide(&ret, &base);
 	return ret;
 }
 
