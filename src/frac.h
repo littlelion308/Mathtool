@@ -1,4 +1,5 @@
 #include "field.h"
+#include "ring.h"
 
 #ifndef FRAC
 #define FRAC
@@ -6,7 +7,6 @@
 typedef struct {
 	unsigned int denominator;
 	int numerator;
-	field *field;
 } frac;
 #endif
 // fi denominator equals 0, optimize will equal INT_MAX/0
@@ -20,6 +20,8 @@ void printFrac(frac a);
 frac power(frac base, int exponent);
 
 // generic
+field getFracField();
+ring getFracRing();
 void optimise(void *a);
 void *copy(void *a);
 

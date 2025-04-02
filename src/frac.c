@@ -4,12 +4,21 @@
 #include <string.h>
 #include <limits.h>
 
-static field getField() {
+field getFracField() {
 	frac addneutural = makeFrac(0,1);
 	group fracAdd = {&add, &addneutural, &subFromZero, &sub, &copy};
 	frac mplneutural = makeFrac(1,1);
-	group fracMpl = {&mpl, &addneutural, &mplMOne, &divide, &copy};
+	group fracMpl = {&mpl, &mplneutural, &mplMOne, &divide, &copy};
 	field fracField = {fracAdd, fracMpl, &optimise};
+	return fracField;
+}
+
+ring getFracRing() {
+	frac addneutural = makeFrac(0,1);
+	group fracAdd = {&add, &addneutural, &subFromZero, &sub, &copy};
+	frac mplneutural = makeFrac(1,1);
+	monoid fracMpl = {&mpl, &mplneutural, &copy};
+	ring fracField = {fracAdd, fracMpl, &optimise};
 	return fracField;
 }
 
@@ -74,7 +83,7 @@ void *add(void *va, void *vb) {
 }
 
 void *subFromZero(void *a) {
-	sub(getField().add.neutral, a);
+	return sub(getFracRing().add.neutral, a);
 }
 
 void *sub(void *va, void *vb) {
@@ -96,7 +105,7 @@ void *mpl(void *va, void *vb) {
 }
 
 void *mplMOne(void *a) {
-	divide(getField().mpl.neutral, a);
+	return divide(getFracRing().mpl.neutral, a);
 }
 
 void *divide(void *va, void *vb) {
