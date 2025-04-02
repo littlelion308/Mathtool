@@ -4,21 +4,22 @@
 #include <string.h>
 #include <limits.h>
 
+
 field getFracField() {
-	frac addneutural = makeFrac(0,1);
-	group fracAdd = {&add, &addneutural, &subFromZero, &sub, &copy};
-	frac mplneutural = makeFrac(1,1);
-	group fracMpl = {&mpl, &mplneutural, &mplMOne, &divide, &copy};
-	field fracField = {fracAdd, fracMpl, &optimise};
+	const frac addneutural = makeFrac(0,1);
+	const group fracAdd = {&add, &addneutural, &subFromZero, &sub, &copy};
+	const frac mplneutural = makeFrac(1,1);
+	const group fracMpl = {&mpl, &mplneutural, &mplMOne, &divide, &copy};
+	const field fracField = {fracAdd, fracMpl, &optimise};
 	return fracField;
 }
 
 ring getFracRing() {
-	frac addneutural = makeFrac(0,1);
-	group fracAdd = {&add, &addneutural, &subFromZero, &sub, &copy};
-	frac mplneutural = makeFrac(1,1);
-	monoid fracMpl = {&mpl, &mplneutural, &copy};
-	ring fracField = {fracAdd, fracMpl, &optimise};
+	const frac addneutural = makeFrac(0,1);
+	const group fracAdd = {&add, &addneutural, &subFromZero, &sub, &copy};
+	const frac mplneutural = makeFrac(1,1);
+	const monoid fracMpl = {&mpl, &mplneutural, &copy};
+	const ring fracField = {fracAdd, fracMpl, &optimise};
 	return fracField;
 }
 
