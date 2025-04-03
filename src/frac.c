@@ -47,7 +47,7 @@ void freeFrac(void *a) {
 }
 
 
-void optimiseFrac(void *input) {
+void *optimiseFrac(void *input) {
 	ringVar *ringVara = (ringVar *)input;
 	frac *a = (frac *)ringVara->val;
 	int num = a->numerator;
@@ -55,7 +55,7 @@ void optimiseFrac(void *input) {
 	if (num == 0) {
 		a->numerator = 0;
 		a->denominator = 1;
-		return;
+		return input;
 	}
 	if (den < 0) {
 		a->numerator *= -1;
@@ -64,11 +64,12 @@ void optimiseFrac(void *input) {
 	if (den == 0) {
 		a->numerator = num > 0 ? INT_MAX : INT_MIN;
 		a->denominator = 0;
-		return;
+		return input;
 	}
 	int div = gcd(num, den);
 	a->numerator = num/div;
 	a->denominator = den/div;
+	return input;
 }
 
 // writtern in case it ever gets needed
@@ -89,11 +90,11 @@ void *addFrac(void *va, void *vb) {
 	frac *a = (frac *)ra;
 	frac *b = (frac *)rb;
 	frac c = makeFrac((a->numerator * b->denominator) + (b->numerator * a->denominator), a->denominator * b->denominator);
-	optimiseFrac((void *)&c);
+	c = *(frac *)optimiseFrac((void *)&c);
 	ringVar *rc;
 	rc->val = copyFrac(&c);
 	rc->ring = ra->ring;
-	return varCopy(&rc);
+	return varCopy(rc);
 }
 
 void *subFromZeroFrac(void *a) {
@@ -107,11 +108,11 @@ void *subFrac(void *va, void *vb) {
 	frac *a = (frac *)ra;
 	frac *b = (frac *)rb;
 	frac c = makeFrac((a->numerator * b->denominator) - (b->numerator * a->denominator), a->denominator * b->denominator);
-	optimiseFrac((void *)&c);
+	c = *(frac *)optimiseFrac((void *)&c);
 	ringVar *rc;
 	rc->val = copyFrac(&c);
 	rc->ring = ra->ring;
-	return varCopy(&rc);
+	return varCopy(rc);
 }
 
 
@@ -121,11 +122,11 @@ void *mplFrac(void *va, void *vb) {
 	frac *a = (frac *)ra;
 	frac *b = (frac *)rb;
 	frac c = makeFrac((a->numerator * b->numerator), a->denominator * b->denominator);
-	optimiseFrac((void *)&c);
+	c = *(frac *)optimiseFrac((void *)&c);
 	ringVar *rc;
 	rc->val = copyFrac(&c);
 	rc->ring = ra->ring;
-	return varCopy(&rc);
+	return varCopy(rc);
 }
 
 void *mplMOneFrac(void *a) {
@@ -139,11 +140,11 @@ void *divideFrac(void *va, void *vb) {
 	frac *a = (frac *)ra;
 	frac *b = (frac *)rb;
 	frac c = makeFrac((a->numerator * b->denominator), a->denominator * b->numerator);
-	optimiseFrac((void *)&c);
+	c = *(frac *)optimiseFrac((void *)&c);
 	fieldVar *rc;
 	rc->val = copyFrac(&c);
 	rc->field = ra->field;
-	return varCopy(&rc);
+	return varCopy(rc);
 }
 /* frac power(frac a, frac b) {} */
 

@@ -23,7 +23,7 @@ frac power(frac base, int exponent);
 // generic
 field getFracField();
 ring getFracRing();
-void optimiseFrac(void *a);
+void *optimiseFrac(void *a);
 void *copyFrac(void *a);
 void freeFrac(void *a);
 
