@@ -1,5 +1,6 @@
 #include "field.h"
 #include "ring.h"
+#include "genericVar.h"
 
 #ifndef FRAC
 #define FRAC
@@ -24,6 +25,7 @@ field getFracField();
 ring getFracRing();
 void optimise(void *a);
 void *copy(void *a);
+void freeFrac(void *a);
 
 // add
 void *add(void *a, void *b);

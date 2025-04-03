@@ -10,16 +10,18 @@ field getFracField() {
 	const group fracAdd = {&add, &addneutural, &subFromZero, &sub, &copy};
 	const frac mplneutural = makeFrac(1,1);
 	const group fracMpl = {&mpl, &mplneutural, &mplMOne, &divide, &copy};
-	const field fracField = {fracAdd, fracMpl, &optimise};
+	const genops gOps = {&optimise, &copy, &freeFrac};
+	const field fracField = {fracAdd, fracMpl, gOps};
 	return fracField;
 }
 
 ring getFracRing() {
 	const frac addneutural = makeFrac(0,1);
-	const group fracAdd = {&add, &addneutural, &subFromZero, &sub, &copy};
+	const group fracAdd = {&add, &addneutural, &subFromZero, &sub};
 	const frac mplneutural = makeFrac(1,1);
-	const monoid fracMpl = {&mpl, &mplneutural, &copy};
-	const ring fracField = {fracAdd, fracMpl, &optimise};
+	const monoid fracMpl = {&mpl, &mplneutural};
+	const genops gOps = {&optimise, &copy, &freeFrac};
+	const ring fracField = {fracAdd, fracMpl,gOps};
 	return fracField;
 }
 
@@ -39,6 +41,11 @@ int gcd(int a, int b) {
 
 
 }
+
+void freeFrac(void *a) {
+	free(a);
+}
+
 
 void optimise(void *input) {
 	ringVar *ringVara = (ringVar *)input;
@@ -86,7 +93,7 @@ void *add(void *va, void *vb) {
 	ringVar *rc;
 	rc->val = copy(&c);
 	rc->ring = ra->ring;
-	return copy(&rc);
+	return varCopy(&rc);
 }
 
 void *subFromZero(void *a) {
@@ -104,7 +111,7 @@ void *sub(void *va, void *vb) {
 	ringVar *rc;
 	rc->val = copy(&c);
 	rc->ring = ra->ring;
-	return copy(&rc);
+	return varCopy(&rc);
 }
 
 
@@ -118,7 +125,7 @@ void *mpl(void *va, void *vb) {
 	ringVar *rc;
 	rc->val = copy(&c);
 	rc->ring = ra->ring;
-	return copy(&rc);
+	return varCopy(&rc);
 }
 
 void *mplMOne(void *a) {
@@ -136,7 +143,7 @@ void *divide(void *va, void *vb) {
 	fieldVar *rc;
 	rc->val = copy(&c);
 	rc->field = ra->field;
-	return copy(&rc);
+	return varCopy(&rc);
 }
 /* frac power(frac a, frac b) {} */
 
