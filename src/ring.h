@@ -11,6 +11,6 @@ typedef struct {
 
 typedef struct {
 	void *val;
-	ring *field;
+	ring *ring;
 } ringVar;
 #endif
