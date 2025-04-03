@@ -7,20 +7,20 @@
 
 field getFracField() {
 	const frac addneutural = makeFrac(0,1);
-	const group fracAdd = {&add, &addneutural, &subFromZero, &sub, &copy};
+	const group fracAdd = {&addFrac, &addneutural, &subFromZeroFrac, &subFrac};
 	const frac mplneutural = makeFrac(1,1);
-	const group fracMpl = {&mpl, &mplneutural, &mplMOne, &divide, &copy};
-	const genops gOps = {&optimise, &copy, &freeFrac};
+	const group fracMpl = {&mplFrac, &mplneutural, &mplMOneFrac, &divideFrac};
+	const genops gOps = {&optimiseFrac, &copyFrac, &freeFrac};
 	const field fracField = {fracAdd, fracMpl, gOps};
 	return fracField;
 }
 
 ring getFracRing() {
 	const frac addneutural = makeFrac(0,1);
-	const group fracAdd = {&add, &addneutural, &subFromZero, &sub};
+	const group fracAdd = {&addFrac, &addneutural, &subFromZeroFrac, &subFrac};
 	const frac mplneutural = makeFrac(1,1);
-	const monoid fracMpl = {&mpl, &mplneutural};
-	const genops gOps = {&optimise, &copy, &freeFrac};
+	const monoid fracMpl = {&mplFrac, &mplneutural};
+	const genops gOps = {&optimiseFrac, &copyFrac, &freeFrac};
 	const ring fracField = {fracAdd, fracMpl,gOps};
 	return fracField;
 }
@@ -47,7 +47,7 @@ void freeFrac(void *a) {
 }
 
 
-void optimise(void *input) {
+void optimiseFrac(void *input) {
 	ringVar *ringVara = (ringVar *)input;
 	frac *a = (frac *)ringVara->val;
 	int num = a->numerator;
@@ -77,71 +77,71 @@ void optimise(void *input) {
 /* } */
 
 
-void *copy(void *a) {
+void *copyFrac(void *a) {
 	void *b = malloc(sizeof(frac));
 	memcpy(b, a, sizeof(frac));
 	return b;
 }
 
-void *add(void *va, void *vb) {
+void *addFrac(void *va, void *vb) {
 	ringVar *ra = (ringVar *)va;
 	ringVar *rb = (ringVar *)vb;
 	frac *a = (frac *)ra;
 	frac *b = (frac *)rb;
 	frac c = makeFrac((a->numerator * b->denominator) + (b->numerator * a->denominator), a->denominator * b->denominator);
-	optimise((void *)&c);
+	optimiseFrac((void *)&c);
 	ringVar *rc;
-	rc->val = copy(&c);
+	rc->val = copyFrac(&c);
 	rc->ring = ra->ring;
 	return varCopy(&rc);
 }
 
-void *subFromZero(void *a) {
+void *subFromZeroFrac(void *a) {
 	ringVar neuturalRing = {getFracRing().add.neutral, ((ringVar *)a)->ring};
-	return sub(&neuturalRing, a);
+	return subFrac(&neuturalRing, a);
 }
 
-void *sub(void *va, void *vb) {
+void *subFrac(void *va, void *vb) {
 	ringVar *ra = (ringVar *)va;
 	ringVar *rb = (ringVar *)vb;
 	frac *a = (frac *)ra;
 	frac *b = (frac *)rb;
 	frac c = makeFrac((a->numerator * b->denominator) - (b->numerator * a->denominator), a->denominator * b->denominator);
-	optimise((void *)&c);
+	optimiseFrac((void *)&c);
 	ringVar *rc;
-	rc->val = copy(&c);
+	rc->val = copyFrac(&c);
 	rc->ring = ra->ring;
 	return varCopy(&rc);
 }
 
 
-void *mpl(void *va, void *vb) {
+void *mplFrac(void *va, void *vb) {
 	ringVar *ra = (ringVar *)va;
 	ringVar *rb = (ringVar *)vb;
 	frac *a = (frac *)ra;
 	frac *b = (frac *)rb;
 	frac c = makeFrac((a->numerator * b->numerator), a->denominator * b->denominator);
-	optimise((void *)&c);
+	optimiseFrac((void *)&c);
 	ringVar *rc;
-	rc->val = copy(&c);
+	rc->val = copyFrac(&c);
 	rc->ring = ra->ring;
 	return varCopy(&rc);
 }
 
-void *mplMOne(void *a) {
+void *mplMOneFrac(void *a) {
 	ringVar neuturalRing = {getFracRing().mpl.neutral, ((ringVar *)a)->ring};
-	return divide(&neuturalRing, a);
+	return divideFrac(&neuturalRing, a);
 }
 
-void *divide(void *va, void *vb) {
+void *divideFrac(void *va, void *vb) {
 	fieldVar *ra = (fieldVar *)va;
 	fieldVar *rb = (fieldVar *)vb;
 	frac *a = (frac *)ra;
 	frac *b = (frac *)rb;
 	frac c = makeFrac((a->numerator * b->denominator), a->denominator * b->numerator);
-	optimise((void *)&c);
+	optimiseFrac((void *)&c);
 	fieldVar *rc;
-	rc->val = copy(&c);
+	rc->val = copyFrac(&c);
 	rc->field = ra->field;
 	return varCopy(&rc);
 }
@@ -152,10 +152,10 @@ frac power(frac base, int exponent) {
 	if (exponent == 0) return makeFrac(1,1);
 	if (exponent > 1)
 		for (; exponent > 1; exponent--)
-			ret = *(frac *)mpl(&ret, &base);
+			ret = *(frac *)mplFrac(&ret, &base);
 	else if (exponent < 0)
 		for (; exponent < 1; exponent++)
-			ret = *(frac *)divide(&ret, &base);
+			ret = *(frac *)divideFrac(&ret, &base);
 	return ret;
 }
 

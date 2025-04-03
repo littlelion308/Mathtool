@@ -23,16 +23,16 @@ frac power(frac base, int exponent);
 // generic
 field getFracField();
 ring getFracRing();
-void optimise(void *a);
-void *copy(void *a);
+void optimiseFrac(void *a);
+void *copyFrac(void *a);
 void freeFrac(void *a);
 
 // add
-void *add(void *a, void *b);
-void *subFromZero(void *a);
-void *sub(void *a, void *b);
+void *addFrac(void *a, void *b);
+void *subFromZeroFrac(void *a);
+void *subFrac(void *a, void *b);
 
 // multipy
-void *mpl(void *a, void *b);
-void *mplMOne(void *a);
-void *divide(void *a, void *b);
+void *mplFrac(void *a, void *b);
+void *mplMOneFrac(void *a);
+void *divideFrac(void *a, void *b);
