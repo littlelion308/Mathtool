@@ -15,6 +15,7 @@ typedef struct {
 //spcific
 int gcd(int a, int b);
 frac makeFrac(int numerator, int denominator);
+fieldVar *makeFracFromInts(int a, unsigned int b);
 double toDouble(frac a);
 float toFloat(frac a);
 void printFrac(frac a);

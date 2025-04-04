@@ -15,6 +15,7 @@ typedef struct {
 	group add;
 	group mpl;
 	genops gen;
+	const char name[10];
 } field;
 
 typedef struct {

@@ -17,6 +17,7 @@ typedef struct {
 	group add;
 	monoid mpl;
 	genops gen;
+	const char name[10];
 } ring;
 
 typedef struct {

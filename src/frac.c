@@ -11,7 +11,7 @@ field getFracField() {
 	const frac mplneutural = makeFrac(1,1);
 	const group fracMpl = {&mplFrac, &mplneutural, &mplMOneFrac, &divideFrac};
 	const genops gOps = {&optimiseFrac, &copyFrac, &freeFrac};
-	const field fracField = {fracAdd, fracMpl, gOps};
+	const field fracField = {fracAdd, fracMpl, gOps, "Rational F"};
 	return fracField;
 }
 
@@ -21,7 +21,7 @@ ring getFracRing() {
 	const frac mplneutural = makeFrac(1,1);
 	const monoid fracMpl = {&mplFrac, &mplneutural};
 	const genops gOps = {&optimiseFrac, &copyFrac, &freeFrac};
-	const ring fracField = {fracAdd, fracMpl,gOps};
+	const ring fracField = {fracAdd, fracMpl,gOps, "Rational R"};
 	return fracField;
 }
 
@@ -175,4 +175,14 @@ float toFloat(frac a) {
 
 void printFrac(frac a) {
 	printf("%d/%d\n", a.numerator, a. denominator);
+}
+
+fieldVar *makeFracFromInts(int a, unsigned int b){
+	fieldVar *ret = malloc(sizeof(ringVar));
+	field fielda = getFracField();
+	ret->field = &fielda;
+	frac inta = makeFrac(a, b);
+	ret->val = &inta;
+
+	return ret;
 }
